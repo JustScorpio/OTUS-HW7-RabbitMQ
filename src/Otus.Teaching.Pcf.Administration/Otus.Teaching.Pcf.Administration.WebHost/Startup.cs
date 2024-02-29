@@ -16,6 +16,8 @@ using Otus.Teaching.Pcf.Administration.DataAccess.Data;
 using Otus.Teaching.Pcf.Administration.DataAccess.Repositories;
 using Otus.Teaching.Pcf.Administration.Core.Domain.Administration;
 using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
+using MassTransit;
+using Otus.Teaching.Pcf.Administration.WebHost.Consumers;
 
 namespace Otus.Teaching.Pcf.Administration.WebHost
 {
@@ -48,6 +50,21 @@ namespace Otus.Teaching.Pcf.Administration.WebHost
             {
                 options.Title = "PromoCode Factory Administration API Doc";
                 options.Version = "1.0";
+            });
+
+            services.AddMassTransit(x =>
+            {
+                x.AddConsumer<PromocodeCreatedConsumer>();
+                x.UsingRabbitMq((context, cfg) =>
+                {
+                    cfg.Host("localhost", "/", h =>
+                    {
+                        h.Username("guest");
+                        h.Password("guest");
+                    });
+
+                    cfg.ConfigureEndpoints(context);
+                });
             });
         }
 

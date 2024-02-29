@@ -7,6 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\SharedLibrary\SharedLibrary.csproj" />
       <ProjectReference Include="..\Otus.Teaching.Pcf.GivingToCustomer.Core\Otus.Teaching.Pcf.GivingToCustomer.Core.csproj" />
       <ProjectReference Include="..\Otus.Teaching.Pcf.GivingToCustomer.DataAccess\Otus.Teaching.Pcf.GivingToCustomer.DataAccess.csproj" />
       <ProjectReference Include="..\Otus.Teaching.Pcf.GivingToCustomer.Integration\Otus.Teaching.Pcf.GivingToCustomer.Integration.csproj" />
@@ -14,6 +15,9 @@
 
     <ItemGroup>
       <PackageReference Include="EFCore.NamingConventions" Version="1.1.0" />
+      <PackageReference Include="MassTransit" Version="8.1.3" />
+      <PackageReference Include="MassTransit.AspNetCore" Version="7.3.1" />
+      <PackageReference Include="MassTransit.RabbitMQ" Version="8.1.3" />
       <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.4" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="3.1.4" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.4" />

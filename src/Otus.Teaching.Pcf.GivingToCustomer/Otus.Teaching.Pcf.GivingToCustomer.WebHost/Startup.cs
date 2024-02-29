@@ -17,6 +17,8 @@ using Otus.Teaching.Pcf.GivingToCustomer.DataAccess.Data;
 using Otus.Teaching.Pcf.GivingToCustomer.DataAccess.Repositories;
 using Otus.Teaching.Pcf.GivingToCustomer.Integration;
 using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
+using MassTransit;
+using Otus.Teaching.Pcf.GivingToCustomer.WebHost.Consumers;
 
 namespace Otus.Teaching.Pcf.GivingToCustomer.WebHost
 {
@@ -50,6 +52,21 @@ namespace Otus.Teaching.Pcf.GivingToCustomer.WebHost
             {
                 options.Title = "PromoCode Factory Giving To Customer API Doc";
                 options.Version = "1.0";
+            });
+
+            services.AddMassTransit(x =>
+            {
+                x.AddConsumer<PromocodeCreatedConsumer>();
+                x.UsingRabbitMq((context, cfg) =>
+                {
+                    cfg.Host("localhost", "/", h =>
+                    {
+                        h.Username("guest");
+                        h.Password("guest");
+                    });
+
+                    cfg.ConfigureEndpoints(context);
+                });
             });
         }
 

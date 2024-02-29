@@ -17,6 +17,7 @@ using Otus.Teaching.Pcf.ReceivingFromPartner.DataAccess.Data;
 using Otus.Teaching.Pcf.ReceivingFromPartner.DataAccess.Repositories;
 using Otus.Teaching.Pcf.ReceivingFromPartner.Integration;
 using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
+using MassTransit;
 
 namespace Otus.Teaching.Pcf.ReceivingFromPartner.WebHost
 {
@@ -61,6 +62,20 @@ namespace Otus.Teaching.Pcf.ReceivingFromPartner.WebHost
             {
                 options.Title = "PromoCode Factory Receiving From Partner API Doc";
                 options.Version = "1.0";
+            });
+
+            services.AddMassTransit(x =>
+            {
+                x.UsingRabbitMq((context, cfg) =>
+                {
+                    cfg.Host("localhost", "/", h =>
+                    {
+                        h.Username("guest");
+                        h.Password("guest");
+                    });
+
+                    cfg.ConfigureEndpoints(context);
+                });
             });
         }
 
