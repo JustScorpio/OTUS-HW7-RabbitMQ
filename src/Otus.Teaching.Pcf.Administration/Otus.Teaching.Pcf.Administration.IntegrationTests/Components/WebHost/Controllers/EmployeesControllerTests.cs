@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using FluentAssertions;
 using Otus.Teaching.Pcf.Administration.Core.Domain.Administration;
+using Otus.Teaching.Pcf.Administration.Core.Handlers;
 using Otus.Teaching.Pcf.Administration.DataAccess.Repositories;
 using Otus.Teaching.Pcf.Administration.WebHost.Controllers;
 using Xunit;
@@ -13,11 +14,12 @@ namespace Otus.Teaching.Pcf.Administration.IntegrationTests.Components.WebHost.C
     {
         private EfRepository<Employee> _employeesRepository;
         private EmployeesController _employeesController;
+        private PromocodeCreatedHandler _promocodeCreatedHandler;
 
         public EmployeesControllerTests(EfDatabaseFixture efDatabaseFixture)
         {
             _employeesRepository = new EfRepository<Employee>(efDatabaseFixture.DbContext);
-            _employeesController = new EmployeesController(_employeesRepository);
+            _employeesController = new EmployeesController(_employeesRepository, _promocodeCreatedHandler);
         }
 
         [Fact]

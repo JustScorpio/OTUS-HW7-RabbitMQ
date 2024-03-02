@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Otus.Teaching.Pcf.Administration.WebHost.Models;
 using Otus.Teaching.Pcf.Administration.Core.Abstractions.Repositories;
 using Otus.Teaching.Pcf.Administration.Core.Domain.Administration;
+using Otus.Teaching.Pcf.Administration.Core.Handlers;
 
 namespace Otus.Teaching.Pcf.Administration.WebHost.Controllers
 {
@@ -18,10 +19,12 @@ namespace Otus.Teaching.Pcf.Administration.WebHost.Controllers
         : ControllerBase
     {
         private readonly IRepository<Employee> _employeeRepository;
+        private readonly PromocodeCreatedHandler _promocodeCreatedHandler;
 
-        public EmployeesController(IRepository<Employee> employeeRepository)
+        public EmployeesController(IRepository<Employee> employeeRepository, PromocodeCreatedHandler promocodeCreatedHandler)
         {
             _employeeRepository = employeeRepository;
+            _promocodeCreatedHandler = promocodeCreatedHandler;
         }
         
         /// <summary>
@@ -80,18 +83,9 @@ namespace Otus.Teaching.Pcf.Administration.WebHost.Controllers
         /// <param name="id">Id сотрудника, например <example>451533d5-d8d5-4a11-9c7b-eb9f14e1a32f</example></param>
         /// <returns></returns>
         [HttpPost("{id:guid}/appliedPromocodes")]
-        
         public async Task<IActionResult> UpdateAppliedPromocodesAsync(Guid id)
         {
-            var employee = await _employeeRepository.GetByIdAsync(id);
-
-            if (employee == null)
-                return NotFound();
-
-            employee.AppliedPromocodesCount++;
-
-            await _employeeRepository.UpdateAsync(employee);
-
+            _promocodeCreatedHandler.Handle(id);
             return Ok();
         }
     }

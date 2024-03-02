@@ -19,6 +19,8 @@ using Otus.Teaching.Pcf.GivingToCustomer.Integration;
 using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
 using MassTransit;
 using Otus.Teaching.Pcf.GivingToCustomer.WebHost.Consumers;
+using Otus.Teaching.Pcf.GivingToCustomer.Core.Handlers;
+using Otus.Teaching.Pcf.GivingToCustomer.Core.Domain;
 
 namespace Otus.Teaching.Pcf.GivingToCustomer.WebHost
 {
@@ -48,6 +50,8 @@ namespace Otus.Teaching.Pcf.GivingToCustomer.WebHost
                 x.UseLazyLoadingProxies();
             });
 
+            services.AddScoped(typeof(PromocodeCreatedHandler));
+
             services.AddOpenApiDocument(options =>
             {
                 options.Title = "PromoCode Factory Giving To Customer API Doc";
@@ -65,7 +69,10 @@ namespace Otus.Teaching.Pcf.GivingToCustomer.WebHost
                         h.Password("guest");
                     });
 
-                    cfg.ConfigureEndpoints(context);
+                    cfg.ReceiveEndpoint("GivingToCustomer", e =>
+                    {
+                        e.ConfigureConsumer<PromocodeCreatedConsumer>(context);
+                    });
                 });
             });
         }

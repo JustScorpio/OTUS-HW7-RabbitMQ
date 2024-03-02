@@ -18,6 +18,7 @@ using Otus.Teaching.Pcf.Administration.Core.Domain.Administration;
 using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
 using MassTransit;
 using Otus.Teaching.Pcf.Administration.WebHost.Consumers;
+using Otus.Teaching.Pcf.Administration.Core.Handlers;
 
 namespace Otus.Teaching.Pcf.Administration.WebHost
 {
@@ -46,6 +47,8 @@ namespace Otus.Teaching.Pcf.Administration.WebHost
                 x.UseLazyLoadingProxies();
             });
 
+            services.AddScoped(typeof(PromocodeCreatedHandler));
+
             services.AddOpenApiDocument(options =>
             {
                 options.Title = "PromoCode Factory Administration API Doc";
@@ -63,7 +66,10 @@ namespace Otus.Teaching.Pcf.Administration.WebHost
                         h.Password("guest");
                     });
 
-                    cfg.ConfigureEndpoints(context);
+                    cfg.ReceiveEndpoint("Administration", e =>
+                    {
+                        e.ConfigureConsumer<PromocodeCreatedConsumer>(context);
+                    });
                 });
             });
         }
